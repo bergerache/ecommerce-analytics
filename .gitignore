@@ -1,0 +1,14 @@
+dbt_env/
+target/
+dbt_packages/
+logs/
+.env
+profiles.yml
+*.csv
+.DS_Store
+__pycache__/
+.vscode/settings.json
+*.log
+load_data_to_bigquery.py
+*.pyc
+.Python
