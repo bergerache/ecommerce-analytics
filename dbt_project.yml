@@ -33,13 +33,17 @@ models:
     staging:
       +materialized: view
       +tags: ["staging"]
+      +schema: staging  # This creates dev_staging
     intermediate:
       +materialized: table  
       +tags: ["intermediate"]
+      +schema: intermediate  # This creates dev_intermediate
     marts:
       core:
         +materialized: table
         +tags: ["marts", "core"]
+        +schema: marts  # This creates dev_marts
       analytics:
         +materialized: table
         +tags: ["marts", "analytics"]
+        +schema: marts  # This creates dev_marts
