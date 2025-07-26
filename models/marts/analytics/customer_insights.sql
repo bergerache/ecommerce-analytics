@@ -5,16 +5,80 @@
   )
 }}
 
-WITH customer_metrics AS (
-  SELECT * FROM {{ ref('int_customer_metrics') }}
+WITH customers AS (
+  SELECT * FROM {{ ref('dim_customers') }}
 ),
 
-rfm_data AS (
-  SELECT * FROM {{ ref('int_rfm_analysis') }}
+sales_data AS (
+  SELECT * FROM {{ ref('fct_sales') }}
 ),
 
-marketing_actions AS (
-  SELECT * FROM {{ ref('rfm_marketing_actions') }}
+-- Customer aggregations from fct_sales instead of int_customer_metrics
+customer_aggregations AS (
+  SELECT
+    customer_id,
+    
+    -- Basic metrics
+    COUNT(DISTINCT invoice_id) AS total_orders,
+    SUM(line_total) AS total_revenue,
+    SUM(quantity) AS total_items_purchased,
+    COUNT(*) AS total_line_items,
+    ROUND(AVG(line_total), 2) AS avg_order_value,
+    ROUND(AVG(quantity), 2) AS avg_items_per_order,
+    ROUND(AVG(unit_price), 2) AS avg_price_per_item,
+    
+    -- Time attributes
+    MIN(invoice_date) AS first_order_date,
+    MAX(invoice_date) AS last_order_date,
+    DATE_DIFF(MAX(invoice_date), MIN(invoice_date), DAY) AS customer_lifespan_days,
+    
+    -- Geographic attributes
+    COUNT(DISTINCT country) AS countries_purchased_from,
+    STRING_AGG(DISTINCT country ORDER BY country) AS countries_list,
+    
+    -- Market segment (based on primary country)
+    CASE
+      WHEN COUNTIF(country = 'UNITED KINGDOM') > COUNTIF(country != 'UNITED KINGDOM') THEN 'UK'
+      ELSE 'EU'
+    END AS primary_market,
+    
+    -- Additional metrics
+    COUNT(DISTINCT product_id) AS unique_products_purchased,
+    ROUND(COUNT(DISTINCT product_id) * 1.0 / COUNT(DISTINCT invoice_id), 2) AS avg_products_per_order,
+    
+    -- Metadata
+    CURRENT_TIMESTAMP() AS _calculated_at
+    
+  FROM sales_data
+  GROUP BY customer_id
+),
+
+-- Customer behavioral classifications
+customer_classifications AS (
+  SELECT
+    ca.*,
+    
+    -- Customer behavioral classifications
+    CASE
+      WHEN ca.total_orders = 1 THEN 'One-Time'
+      WHEN ca.total_orders BETWEEN 2 AND 4 THEN 'Occasional'
+      WHEN ca.total_orders BETWEEN 5 AND 9 THEN 'Regular'
+      ELSE 'Frequent'
+    END AS purchase_frequency_segment,
+    
+    CASE
+      WHEN ca.total_revenue < 50 THEN 'Low Value'
+      WHEN ca.total_revenue BETWEEN 50 AND 200 THEN 'Medium Value'
+      WHEN ca.total_revenue BETWEEN 200 AND 500 THEN 'High Value'
+      ELSE 'VIP'
+    END AS customer_value_segment,
+    
+    -- Business flags
+    CASE WHEN ca.total_orders = 1 THEN TRUE ELSE FALSE END AS is_one_time_customer,
+    CASE WHEN ca.total_revenue > 500 THEN TRUE ELSE FALSE END AS is_vip_customer,
+    CASE WHEN ca.countries_purchased_from > 1 THEN TRUE ELSE FALSE END AS is_multi_country_customer
+    
+  FROM customer_aggregations ca
 ),
 
 -- Revenue concentration analysis for business insights
@@ -22,22 +86,31 @@ revenue_concentration AS (
   SELECT
     customer_id,
     total_revenue,
-    ROW_NUMBER() OVER (ORDER BY total_revenue DESC) as customer_rank,
-    SUM(total_revenue) OVER () as total_business_revenue,
-    SUM(total_revenue) OVER (ORDER BY total_revenue DESC ROWS UNBOUNDED PRECEDING) as cumulative_revenue
-  FROM customer_metrics
+    ROW_NUMBER() OVER (ORDER BY total_revenue DESC) AS customer_rank,
+    ROUND(
+      SUM(total_revenue) OVER (ORDER BY total_revenue DESC) * 100.0 / 
+      SUM(total_revenue) OVER (), 1
+    ) AS cumulative_revenue_percentage
+  FROM customer_aggregations
 ),
 
 customer_tiers AS (
   SELECT
-    customer_id,
-    CASE 
-      WHEN customer_rank <= ROUND((SELECT COUNT(*) FROM customer_metrics) * 0.1) THEN 'Top 10%'
-      WHEN customer_rank <= ROUND((SELECT COUNT(*) FROM customer_metrics) * 0.2) THEN 'Top 20%'
-      WHEN customer_rank <= ROUND((SELECT COUNT(*) FROM customer_metrics) * 0.5) THEN 'Top 50%'
+    *,
+    CASE
+      WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.1) THEN 'Top 10%'
+      WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.2) THEN 'Top 20%'
+      WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.5) THEN 'Top 50%'
       ELSE 'Bottom 50%'
     END AS customer_tier,
-    ROUND(cumulative_revenue / total_business_revenue * 100, 1) as cumulative_revenue_percentage
+    
+    CASE
+      WHEN cumulative_revenue_percentage <= 20 THEN 'Champions'
+      WHEN cumulative_revenue_percentage <= 50 THEN 'Loyal Customers'
+      WHEN cumulative_revenue_percentage <= 80 THEN 'Potential Loyalists'
+      ELSE 'New Customers'
+    END AS revenue_tier
+    
   FROM revenue_concentration
 ),
 
@@ -45,73 +118,58 @@ customer_tiers AS (
 enriched_customer_analysis AS (
   SELECT
     -- Customer identifiers
-    cm.customer_id,
-    cm.primary_country,
-    cm.primary_market,
+    cc.customer_id,
     
-    -- Basic metrics
-    cm.total_orders,
-    cm.total_revenue,
-    cm.avg_order_value,
-    cm.total_items_purchased,
-    cm.avg_items_per_order,
-    cm.avg_price_per_item,
+    -- Transaction metrics
+    cc.total_orders,
+    cc.total_revenue,
+    cc.total_items_purchased,
+    cc.total_line_items,
+    cc.avg_order_value,
+    cc.avg_items_per_order,
+    cc.avg_price_per_item,
     
-    -- Time-based insights
-    cm.first_order_date,
-    cm.last_order_date,
-    cm.customer_lifespan_days,
+    -- Time attributes
+    cc.first_order_date,
+    cc.last_order_date,
+    cc.customer_lifespan_days,
     
-    -- Geographic insights
-    cm.countries_purchased_from,
+    -- Geographic attributes
+    cc.countries_purchased_from,
+    cc.primary_market,
     
-    -- Behavioral classifications
-    cm.purchase_frequency_segment,
-    cm.customer_value_segment,
+    -- Additional metrics
+    cc.unique_products_purchased,
+    cc.avg_products_per_order,
     
-    -- Product insights
-    cm.unique_products_purchased,
-    cm.avg_products_per_order,
+    -- Segmentation from existing models
+    cc.purchase_frequency_segment,
+    cc.customer_value_segment,
     
-    -- RFM Analysis
-    rfm.recency_days,
-    rfm.recency_score,
-    rfm.frequency_score,
-    rfm.monetary_score,
-    rfm.rfm_segment,
-    rfm.rfm_segment_name,
-    rfm.customer_lifecycle_stage,
-    
-    -- Marketing recommendations
-    ma.recommended_action,
+    -- RFM Analysis from dim_customers
+    c.rfm_segment_name,
+    c.rfm_segment,
+    c.recency_score,
+    c.frequency_score,
+    c.monetary_score,
+    c.customer_lifecycle_stage,
     
     -- Revenue concentration insights
     ct.customer_tier,
+    ct.revenue_tier,
     ct.cumulative_revenue_percentage,
     
     -- Business insights (calculated fields)
-    CASE 
-      WHEN cm.total_orders = 1 THEN 'Single Purchase Risk'
-      WHEN rfm.recency_days > 180 THEN 'Dormancy Risk'
-      WHEN cm.total_revenue > 500 AND rfm.recency_days > 90 THEN 'High Value At Risk'
-      WHEN cm.total_orders >= 5 AND cm.avg_order_value > 100 THEN 'VIP Potential'
-      ELSE 'Standard'
-    END AS business_risk_flag,
-    
-    CASE
-      WHEN cm.avg_order_value > (SELECT AVG(avg_order_value) * 1.5 FROM customer_metrics) THEN 'High AOV'
-      WHEN cm.total_orders > (SELECT AVG(total_orders) * 2 FROM customer_metrics) THEN 'High Frequency'
-      WHEN cm.unique_products_purchased > 10 THEN 'Product Diverse'
-      ELSE 'Standard'
-    END AS customer_strength,
+    CASE WHEN cc.total_revenue > 500 THEN TRUE ELSE FALSE END AS is_vip_customer,
+    CASE WHEN cc.total_orders = 1 THEN TRUE ELSE FALSE END AS is_one_time_customer,
+    CASE WHEN cc.countries_purchased_from > 1 THEN TRUE ELSE FALSE END AS is_multi_country_customer,
     
     -- Metadata
-    CURRENT_TIMESTAMP() AS _calculated_at
+    cc._calculated_at
     
-  FROM customer_metrics cm
-  LEFT JOIN rfm_data rfm ON cm.customer_id = rfm.customer_id
-  LEFT JOIN marketing_actions ma ON rfm.rfm_segment_name = ma.rfm_segment_name
-  LEFT JOIN customer_tiers ct ON cm.customer_id = ct.customer_id
+  FROM customer_classifications cc
+  LEFT JOIN customers c ON cc.customer_id = c.customer_id
+  LEFT JOIN customer_tiers ct ON cc.customer_id = ct.customer_id
 )
 
 SELECT * FROM enriched_customer_analysis
