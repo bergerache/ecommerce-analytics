@@ -20,6 +20,7 @@ business_summary AS (
     COUNT(DISTINCT s.invoice_id) AS total_orders,
     COUNT(DISTINCT s.customer_id) AS total_customers,
     COUNT(DISTINCT s.product_id) AS total_products,
+    COUNT(DISTINCT s.country) AS total_countries,
     SUM(s.line_total) AS total_revenue,
     SUM(s.quantity) AS total_items_sold,
     
