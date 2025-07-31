@@ -58,6 +58,20 @@ final_dimension AS (
     CASE WHEN cm.total_orders = 1 THEN TRUE ELSE FALSE END AS is_one_time_customer,
     CASE WHEN cm.total_revenue >= 500 THEN TRUE ELSE FALSE END AS is_vip_customer,
     CASE WHEN cm.countries_purchased_from > 1 THEN TRUE ELSE FALSE END AS is_multi_country_customer,
+
+
+    -- RFM Grouped Segments for simplified analysis
+    CASE 
+      WHEN rfm.rfm_segment_name IN ('Champions', 'Loyal Customers') 
+        THEN 'HIGH VALUE'
+      WHEN rfm.rfm_segment_name IN ('Potential Loyalists', 'Promising') 
+        THEN 'MODERATE VALUE'
+      WHEN rfm.rfm_segment_name IN ('At Risk', 'Dormant Loyalists') 
+        THEN 'AT RISK'
+      WHEN rfm.rfm_segment_name IN ('Lost', 'New Customers', 'Others') 
+        THEN 'LOW ENGAGEMENT'
+      ELSE 'UNCLASSIFIED'
+    END AS rfm_grouped_segments,
     
     -- Metadata
     CURRENT_TIMESTAMP() AS _loaded_at
