@@ -20,10 +20,10 @@ customer_aggregations AS (
     
     -- Basic metrics
     COUNT(DISTINCT invoice_id) AS total_orders,
-    SUM(line_total) AS total_revenue,
+    ROUND(SUM(line_total),1) AS total_revenue,
     SUM(quantity) AS total_items_purchased,
     COUNT(*) AS total_line_items,
-    ROUND(AVG(line_total), 2) AS avg_order_value,
+    ROUND(SUM(line_total) / COUNT(DISTINCT invoice_id), 2) AS avg_order_value,
     ROUND(AVG(quantity), 2) AS avg_items_per_order,
     ROUND(AVG(unit_price), 2) AS avg_price_per_item,
     
@@ -99,8 +99,10 @@ customer_tiers AS (
     *,
     CASE
       WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.1) THEN 'Top 10%'
-      WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.2) THEN 'Top 20%'
-      WHEN customer_rank <= ROUND(COUNT(*) OVER () * 0.5) THEN 'Top 50%'
+      WHEN customer_rank > ROUND(COUNT(*) OVER () * 0.1) 
+        AND customer_rank <= ROUND(COUNT(*) OVER () * 0.2) THEN 'Top 11-20%'
+      WHEN customer_rank > ROUND(COUNT(*) OVER () * 0.2) 
+        AND customer_rank <= ROUND(COUNT(*) OVER () * 0.5) THEN 'Top 21-50%'
       ELSE 'Bottom 50%'
     END AS customer_tier,
     
@@ -158,6 +160,11 @@ enriched_customer_analysis AS (
     ct.customer_tier,
     ct.revenue_tier,
     ct.cumulative_revenue_percentage,
+
+    ROUND(
+      SUM(cc.total_revenue) OVER (PARTITION BY ct.customer_tier) * 100.0 / 
+      SUM(cc.total_revenue) OVER (), 1
+    ) AS tier_revenue_percentage,
     
     -- Business insights (calculated fields)
     CASE WHEN cc.total_revenue > 500 THEN TRUE ELSE FALSE END AS is_vip_customer,
