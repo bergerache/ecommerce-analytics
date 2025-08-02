@@ -16,7 +16,7 @@ WITH base_transactions AS (
 enriched_transactions AS (
   SELECT
     -- Unique identifier for each transaction line item
-    {{ dbt_utils.generate_surrogate_key(['invoice_id', 'product_id']) }} AS order_item_id,
+    {{ dbt_utils.generate_surrogate_key(['invoice_id', 'product_id', 'quantity', 'unit_price', 'invoice_datetime']) }} AS order_item_id,
     
     -- Core transaction data
     invoice_id,
