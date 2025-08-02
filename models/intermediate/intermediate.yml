@@ -1,0 +1,158 @@
+version: 2
+
+models:
+  - name: int_customer_metrics
+    description: |
+      **Customer Metrics - Aggregated Customer Data**
+      
+      Customer-level aggregated metrics and behavioral analysis.
+      Foundation for customer segmentation and lifecycle analysis.
+      
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier - primary key"
+        tests:
+          - not_null
+          - unique
+      - name: total_revenue
+        description: "Customer lifetime revenue - sum of all purchases"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: total_orders
+        description: "Total orders per customer - at least 1 for existing customers"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: avg_order_value
+        description: "Average order value per customer"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: customer_lifespan_days
+        description: "Days between first and last order"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: int_product_metrics
+    description: |
+      **Product Metrics - Aggregated Product Performance**
+      
+      Product-level performance metrics and analytics.
+      Foundation for product portfolio analysis and inventory optimization.
+      
+    columns:
+      - name: product_id
+        description: "Unique product identifier - primary key"
+        tests:
+          - not_null
+          - unique
+      - name: total_revenue
+        description: "Product total revenue across all sales"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: total_quantity_sold
+        description: "Total units sold - at least 1 for active products"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: unique_customers
+        description: "Number of unique customers who purchased this product"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: avg_selling_price
+        description: "Average selling price for this product"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: int_order_items
+    description: |
+      **Order Items - Enriched Transaction Lines**
+      
+      Order line items with enriched attributes for fact table construction.
+      Includes time classifications and geographic segments.
+      
+    columns:
+      - name: order_item_id
+        description: "Unique order line item identifier"
+        tests:
+          - not_null
+          - unique
+      - name: invoice_id
+        description: "Order identifier for grouping line items"
+        tests:
+          - not_null
+      - name: line_total
+        description: "Line item total value - quantity × unit_price"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: market_segment
+        description: "UK or EU market classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UK', 'EU']
+      - name: day_type
+        description: "Weekday or Weekend classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Weekday', 'Weekend']
+
+  - name: int_rfm_analysis
+    description: |
+      **RFM Analysis - Customer Segmentation Foundation**
+      
+      RFM (Recency, Frequency, Monetary) analysis calculations for 
+      customer segmentation and lifecycle classification.
+      
+    columns:
+      - name: customer_id
+        description: "Customer identifier linking to customer metrics"
+        tests:
+          - not_null
+          - unique
+      - name: recency_score
+        description: "RFM recency score (1-5 scale, 5 = most recent)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+      - name: frequency_score
+        description: "RFM frequency score (1-5 scale, 5 = highest frequency)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+      - name: monetary_score
+        description: "RFM monetary score (1-5 scale, 5 = highest value)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+      - name: rfm_segment_name
+        description: "Business-friendly RFM segment names"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Champions', 'Loyal Customers', 'Potential Loyalists', 
+                      'New Customers', 'Promising', 'Dormant Loyalists', 
+                      'At Risk', 'Lost', 'Others']

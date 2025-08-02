@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: stg_invoices
+    description: |
+      **Staging Table - Cleaned Invoice Data**
+      
+      This model cleans and standardises the raw invoice data, preparing it for 
+      downstream analytics. Applies data quality filters and business rules.
+      
+      **Key Transformations:**
+      - Removes invalid transactions (negative quantities/prices)
+      - Standardises country names for consistent geographic analysis
+      - Applies data type conversions and formatting
+      - Creates clean foundation for all downstream models
+      
+    columns:
+      - name: invoice_id
+        description: "Unique invoice identifier - cleaned and validated"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer identifier - validated non-null"
+        tests:
+          - not_null
+      - name: invoice_date
+        description: "Transaction date - validated and formatted"
+        tests:
+          - not_null
+      - name: unit_price
+        description: "Price per unit - positive values only"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: quantity
+        description: "Items purchased - positive values only"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: product_id
+        description: "Product identifier - validated non-null"
+        tests:
+          - not_null
+      - name: product_description
+        description: "Product name/description - cleaned text"
+        tests:
+          - not_null
+      - name: country
+        description: "Customer country - standardised format"
+        tests:
+          - not_null

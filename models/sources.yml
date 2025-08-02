@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: raw_data
+    database: ecommerce-analytics-rb
+    schema: raw_data
+    description: "Historical e-commerce transaction data from BigQuery"
+    tables:
+      - name: invoices
+        description: "Historical invoice transaction data - fixed analytical dataset"
+        columns:
+          - name: InvoiceDate
+            description: "Transaction date - historical period covered"
+            tests:
+              - not_null  # Dates should exist for time-based analysis
+          - name: InvoiceNo
+            description: "Invoice identifier - may contain duplicates in raw data"
+            tests:
+              - not_null
+          - name: CustomerID  
+            description: "Customer identifier - may be missing for some transactions"
+          - name: UnitPrice
+            description: "Price per unit - may contain edge cases needing cleaning"
+          - name: Quantity
+            description: "Items purchased - may contain edge cases needing cleaning"
+          - name: StockCode
+            description: "Product identifier - may be missing for some transactions"
+          - name: Country
+            description: "Customer country - may need standardization"

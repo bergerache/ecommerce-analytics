@@ -1,0 +1,211 @@
+version: 2
+
+models:
+  # CORE MODELS
+  - name: fct_sales
+    description: |
+      **Sales Fact Table - Core Analytics Foundation**
+      
+      Primary fact table containing detailed transaction data at order line item level.
+      Each record represents one product purchased as part of an order, enriched with 
+      dimensional attributes for comprehensive business analysis.
+      
+      **Data Granularity:** One record per order line item (invoice_id + product_id)
+      **Refresh Schedule:** Daily incremental based on invoice_date
+      **Performance:** Partitioned by date, clustered by customer_id and product_id
+      
+    columns:
+      - name: order_item_id
+        description: "Unique order line item identifier - surrogate key"
+        tests:
+          - not_null
+          - unique
+      - name: invoice_id
+        description: "Order identifier for grouping analysis"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer identifier for customer analysis"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Product identifier for product analysis"
+        tests:
+          - not_null
+      - name: line_total
+        description: "Line item total value - business critical metric"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: day_type
+        description: "Weekday or Weekend classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Weekday', 'Weekend']
+      - name: market_segment
+        description: "UK or EU market classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UK', 'EU']
+      - name: time_segment
+        description: "Business Hours or Off Hours classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Business Hours', 'Off Hours']
+
+  - name: dim_customers
+    description: |
+      **Customer Dimension - Complete Customer Intelligence**
+      
+      Comprehensive customer dimension combining transactional behaviour,
+      RFM segmentation, and geographic analysis. Each record represents
+      one unique customer with complete analytical profile.
+      
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier - primary key"
+        tests:
+          - not_null
+          - unique
+      - name: rfm_segment_name
+        description: "RFM segment classification for marketing strategies"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Champions', 'Loyal Customers', 'Potential Loyalists', 
+                      'New Customers', 'Promising', 'Dormant Loyalists', 
+                      'At Risk', 'Lost', 'Others']
+      - name: total_revenue
+        description: "Customer lifetime value - critical business metric"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: customer_lifecycle_stage
+        description: "Customer lifecycle classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['New', 'Developing', 'Established']
+      - name: is_vip_customer
+        description: "VIP customer flag for retention strategies"
+        tests:
+          - not_null
+         # - accepted_values:
+          #    values: [TRUE, FALSE]
+
+  # ANALYTICS MODELS
+  - name: customer_insights
+    description: |
+      **Customer Analytical Insights**
+      
+      Customer analytical insights for strategic decision making, including
+      revenue concentration analysis and customer tier classifications.
+      
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('dim_customers')
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier matching dim_customers"
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: customer_tier
+        description: "Customer value tier classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Top 10%', 'Top 11-20%', 'Top 21-50%', 'Bottom 50%']
+      - name: cumulative_revenue_percentage
+        description: "Cumulative revenue percentage for concentration analysis"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+
+  - name: product_intelligence
+    description: |
+      **Product Performance Intelligence**
+      
+      Product performance intelligence for inventory optimisation and
+      portfolio management decisions.
+      
+    columns:
+      - name: product_id
+        description: "Unique product identifier - primary key"
+        tests:
+          - not_null
+          - unique
+      - name: revenue_rank
+        description: "Product revenue ranking for portfolio analysis"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: cumulative_revenue_percentage
+        description: "Cumulative revenue percentage for portfolio concentration"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+      - name: revenue_tier
+        description: "Revenue tier classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Top 50', 'Top 200', 'Top 500', 'Long Tail']
+      - name: geographic_preference
+        description: "Geographic market preference"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UK-Focused', 'EU-Focused', 'Balanced', 'UK-Only', 'EU-Only']
+
+  - name: business_overview
+    description: |
+      **Business Overview - Executive Metrics**
+      
+      High-level business metrics for executive reporting and
+      strategic decision making.
+      
+    tests:
+      - dbt_utils.recency:
+          datepart: day
+          field: _calculated_at
+          interval: 1
+    columns:
+      - name: total_revenue
+        description: "Total business revenue across analysis period"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: total_customers
+        description: "Total unique customers in the business"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: avg_order_value
+        description: "Average order value across all transactions"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: data_span_days
+        description: "Number of days covered in the analysis"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
