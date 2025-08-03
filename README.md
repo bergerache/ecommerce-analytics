@@ -314,10 +314,11 @@ FROM {{ ref('business_overview') }}
 ## 🔗 **Links & Resources**
 
 - **📊 [Live Dashboard](https://lookerstudio.google.com/s/tw-XMlJeoqg)** - Interactive business intelligence dashboard
-- **📖 [dbt Documentation](dbt-docs-url)** - Complete data model documentation and lineage
-- **🔧 [GitHub Repository](repository-url)** - Full source code with commit history
-- **💼 [LinkedIn Profile](linkedin-url)** - Professional background and recommendations
-- **📧 [Contact](mailto:your.email@domain.com)** - Let's discuss analytics opportunities
+- **📖 [dbt Documentation] Run `dbt docs generate && dbt docs serve` for complete data lineage** - Complete data model documentation and lineage
+- **🔧 [GitHub Repository](https://github.com/bergerache/ecommerce-analytics)** - Full source code with commit history
+- **💼 [LinkedIn Profile](https://www.linkedin.com/in/rachel-berger-data/)** - Professional background 
+
+
 
 ---
 
