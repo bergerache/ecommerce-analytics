@@ -4,11 +4,34 @@
 
 *Transforming raw transaction data into strategic business intelligence through modern data engineering practices*
 
+![Business Foundation](images/image.png)
+![Customer Intelligence](images/image_2.png)
+![Operational Insights](images/image_3.png)
+
+---
+
+## 🎯 Business Problem & Solution
+
+**Problem:** E-commerce companies struggle with fragmented data across multiple systems, making it impossible for executives to get real-time insights into business performance, customer behavior, and revenue trends.
+
+**Solution:** Comprehensive business intelligence platform that transforms raw transactional data into executive-ready dashboards, enabling data-driven decision making for strategic growth.
+
+## 👥 Target Audience
+
+**Primary Users:**
+- **E-commerce Executives** - Strategic decision makers needing KPI visibility
+- **Marketing Teams** - Customer segmentation and campaign performance analysis  
+- **Operations Managers** - Sales performance and inventory insights
+- **Data Teams** - Scalable analytics infrastructure and automated reporting
+
 ---
 
 ## 📊 **Live Dashboard**
 
 🔗 **[View Interactive Dashboard](https://lookerstudio.google.com/s/tw-XMlJeoqg)**
+
+**📊 [View Presentation →](https://gamma.app/docs/E-Commerce-Analytics-rikimpbrzfhs9jp)**  
+*Complete business case and technical implementation walkthrough*
 
 **Experience the complete analytics story across three strategic domains:**
 - **Business Foundation** - Revenue patterns, customer concentration, geographic opportunities
@@ -17,11 +40,8 @@
 
 ---
 
-## 🎯 **Project Overview**
+## 📈 **Business Impact & Key Achievements**
 
-This project demonstrates **end-to-end analytics engineering** capabilities, transforming raw e-commerce transaction data into a comprehensive business intelligence platform that drives strategic decision-making.
-
-### **Key Achievements**
 - **£8.66M** in revenue analyzed across **373 days** of operations
 - **4,293 customers** segmented across **19 countries** with **4,000+ products**
 - **100% test coverage** with **103/103 passing tests** for enterprise-grade data quality
@@ -35,7 +55,7 @@ This project demonstrates **end-to-end analytics engineering** capabilities, tra
 
 ---
 
-## 🏗️ **Data Architecture**
+## 🏗️ **Data Architecture & Technical Implementation**
 
 ```mermaid
 graph TD
@@ -77,6 +97,8 @@ graph TD
 
 ## 📋 **Data Models Architecture**
 
+![Data Models](images/data-architecture.png)
+
 ### **Staging Layer** (`models/staging/`)
 - **`stg_invoices`** - Cleaned and standardized transaction data with data quality filters
 
@@ -99,9 +121,11 @@ graph TD
 
 ---
 
-## 🧪 **Data Quality & Testing**
+## 🧪 **Data Quality & Testing Framework**
 
 **Enterprise-Grade Quality Assurance: 103/103 Tests Passing (100%)**
+
+![Testing Results](images/testing-dashboard.png)
 
 ### **Test Coverage Strategy**
 - **Source Tests** - Raw data validation and freshness monitoring
@@ -133,6 +157,8 @@ FROM {{ ref('business_overview') }}
 
 ## 📊 **Dashboard Story Framework**
 
+![Dashboard Pages](images/dashboard-pages.png)
+
 ### **Page 1: Business Foundation**
 **"Where we stand and what drives our business"**
 
@@ -159,7 +185,29 @@ FROM {{ ref('business_overview') }}
 
 ---
 
-## 🔍 **Key Business Insights**
+## 🛠️ **Advanced Technical Implementation**
+
+### **Advanced dbt Patterns**
+- **Incremental Models**: Efficient daily refresh patterns for large datasets
+- **Surrogate Keys**: Complex key generation handling edge cases and data quality
+- **Macro Usage**: Reusable SQL components for consistent transformations
+- **Custom Tests**: Business-specific validation beyond standard dbt tests
+
+### **Data Engineering Best Practices**
+- **Layered Architecture**: Clear separation of staging, intermediate, and marts
+- **Comprehensive Testing**: 100% test coverage with multiple test types
+- **Documentation**: Rich model and column documentation with business context
+- **Version Control**: Structured commit history and branching strategy
+
+### **Performance Optimization**
+- **Partitioning**: Date-based partitioning for query performance
+- **Clustering**: Strategic clustering by customer_id and product_id
+- **Incremental Processing**: Efficient handling of daily data updates
+- **Query Optimization**: Optimized SQL for BigQuery's distributed architecture
+
+---
+
+## 🔍 **Key Business Insights Generated**
 
 ### **Customer Intelligence**
 - **High-Value Concentration**: 150 Champions generate 40% of total revenue
@@ -221,68 +269,6 @@ FROM {{ ref('business_overview') }}
 
 ---
 
-## 📈 **Business Impact & Applications**
-
-### **For Executive Leadership**
-- **Strategic Risk Assessment**: Customer concentration analysis for business planning
-- **Growth Opportunities**: Geographic expansion and market penetration insights
-- **Performance Monitoring**: Real-time business KPIs and trend analysis
-
-### **For Marketing Teams**
-- **Customer Segmentation**: RFM-based targeting for campaigns and retention
-- **Lifecycle Marketing**: Data-driven customer journey optimization
-- **Geographic Strategy**: Market-specific customer acquisition and retention plans
-
-### **For Operations Teams**
-- **Resource Planning**: Timing-based staffing and inventory optimization
-- **Product Strategy**: Portfolio efficiency and category performance analysis
-- **Geographic Operations**: Country-specific operational intelligence
-
-### **For Finance Teams**
-- **Revenue Analysis**: Detailed revenue attribution and forecasting foundations
-- **Customer Economics**: Lifetime value analysis and profitability insights
-- **Business Planning**: Data-driven financial planning and risk assessment
-
----
-
-## 🛠️ **Technical Implementation Highlights**
-
-### **Advanced dbt Patterns**
-- **Incremental Models**: Efficient daily refresh patterns for large datasets
-- **Surrogate Keys**: Complex key generation handling edge cases and data quality
-- **Macro Usage**: Reusable SQL components for consistent transformations
-- **Custom Tests**: Business-specific validation beyond standard dbt tests
-
-### **Data Engineering Best Practices**
-- **Layered Architecture**: Clear separation of staging, intermediate, and marts
-- **Comprehensive Testing**: 100% test coverage with multiple test types
-- **Documentation**: Rich model and column documentation with business context
-- **Version Control**: Structured commit history and branching strategy
-
-### **Performance Optimization**
-- **Partitioning**: Date-based partitioning for query performance
-- **Clustering**: Strategic clustering by customer_id and product_id
-- **Incremental Processing**: Efficient handling of daily data updates
-- **Query Optimization**: Optimized SQL for BigQuery's distributed architecture
-
----
-
-## 📚 **Project Documentation**
-
-### **Data Lineage & Dependencies**
-- **Automated Documentation**: dbt generates comprehensive data lineage
-- **Model Descriptions**: Business context and technical implementation details
-- **Column Definitions**: Clear descriptions of all metrics and dimensions
-- **Test Documentation**: Explanation of data quality validation rules
-
-### **Code Documentation**
-- **SQL Comments**: Detailed explanation of complex business logic
-- **README Files**: Setup instructions and architectural decisions
-- **Change Log**: Git commit history documenting all improvements
-- **Technical Decisions**: Documentation of modeling choices and trade-offs
-
----
-
 ## 🎯 **Skills Demonstrated**
 
 ### **Analytics Engineering**
@@ -311,39 +297,31 @@ FROM {{ ref('business_overview') }}
 
 ---
 
-## 🔗 **Links & Resources**
+## 📚 **Project Documentation**
 
-- **📊 [Live Dashboard](https://lookerstudio.google.com/s/tw-XMlJeoqg)** - Interactive business intelligence dashboard
-- **📖 [dbt Documentation] Run `dbt docs generate && dbt docs serve` for complete data lineage** - Complete data model documentation and lineage
-- **🔧 [GitHub Repository](https://github.com/bergerache/ecommerce-analytics)** - Full source code with commit history
-- **💼 [LinkedIn Profile](https://www.linkedin.com/in/rachel-berger-data/)** - Professional background 
+### **Data Lineage & Dependencies**
+- **Automated Documentation**: dbt generates comprehensive data lineage
+- **Model Descriptions**: Business context and technical implementation details
+- **Column Definitions**: Clear descriptions of all metrics and dimensions
+- **Test Documentation**: Explanation of data quality validation rules
 
-
+### **Code Documentation**
+- **SQL Comments**: Detailed explanation of complex business logic
+- **README Files**: Setup instructions and architectural decisions
+- **Change Log**: Git commit history documenting all improvements
+- **Technical Decisions**: Documentation of modeling choices and trade-offs
 
 ---
 
-## 🏆 **Project Outcomes**
+## 🔗 **Links & Resources**
 
-### **Technical Achievements**
-- **100% Test Coverage**: 103/103 passing tests ensuring enterprise-grade data quality
-- **Zero Data Quality Issues**: Comprehensive validation catching all edge cases
-- **Optimized Performance**: Efficient incremental processing and query optimization
-- **Complete Documentation**: Full data lineage and business context documentation
-
-### **Business Value Delivered**
-- **Strategic Insights**: Clear identification of revenue concentration risks and opportunities
-- **Actionable Recommendations**: Specific strategies for customer retention and geographic expansion  
-- **Operational Intelligence**: Data-driven insights for resource allocation and timing optimization
-- **Scalable Foundation**: Robust architecture supporting future analytics requirements
-
-### **Professional Development**
-- **Modern Data Stack Proficiency**: Hands-on experience with industry-standard tools
-- **Analytics Engineering Excellence**: Demonstration of best practices and quality standards
-- **Business Impact Focus**: Analytics directly tied to strategic business outcomes
-- **Technical Leadership**: Complex problem-solving and architectural decision-making
+- **📊 [Live Dashboard](https://lookerstudio.google.com/s/tw-XMlJeoqg)** - Interactive business intelligence dashboard
+- **📖 dbt Documentation** - Run `dbt docs generate && dbt docs serve` for complete data lineage
+- **🔧 [GitHub Repository](https://github.com/bergerache/ecommerce-analytics)** - Full source code with commit history
+- **💼 [LinkedIn Profile](https://www.linkedin.com/in/rachel-berger-data/)** - Professional background
 
 ---
 
 **Built with ❤️ for data-driven decision making**
 
-*This project demonstrates the complete analytics engineering lifecycle, from raw data to strategic insights, showcasing the technical skills and business acumen required for senior analytics roles.*
+*Part of a comprehensive Business Intelligence Portfolio demonstrating end-to-end analytics solutions for data-driven organizations.*
