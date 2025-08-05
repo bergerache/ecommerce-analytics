@@ -29,6 +29,7 @@
 - **Revenue Concentration Analysis** - Pareto chart revealing 20/60 rule risk
 - **Geographic Market Intelligence** - UK volume vs EU value opportunity  
 - **Strategic Risk Assessment** - Customer dependency and diversification needs
+
 ![Business Foundation](images/image.png)
 
 ### **Page 2: Customer Intelligence**  
@@ -38,6 +39,7 @@
 - **Customer Lifecycle Journey** - Retention conversion points and LTV patterns
 - **Geographic Behavioral Analysis** - UK frequency vs EU value strategies
 - **Actionable Segmentation** - Targeted retention and acquisition opportunities
+
 ![Customer Intelligence](images/image_2.png)
 
 ### **Page 3: Operational Excellence**
@@ -47,6 +49,7 @@
 - **Operational Timing Analysis** - Peak patterns and resource allocation insights
 - **Geographic Product Performance** - Market-specific product strategies
 - **Efficiency Opportunities** - Data-driven operational improvements
+
 ![Operational Insights](images/image_3.png)
 
 ---
@@ -62,6 +65,25 @@
 - **Business Foundation** - Revenue patterns, customer concentration, geographic opportunities
 - **Customer Intelligence** - RFM segmentation, lifecycle analysis, behavioral insights  
 - **Operational Excellence** - Product portfolio optimization, timing intelligence, geographic performance
+
+---
+
+## 🔍 **Key Business Insights Generated**
+
+### **Customer Intelligence**
+- **Revenue Concentration Risk**: Heavy dependence on top customers creates vulnerability - diversification strategy needed to reduce business risk
+- **Customer Lifecycle Challenge**: Large "Lost" customer segment indicates retention issues - opportunity for re-engagement campaigns
+- **Value Segmentation Opportunity**: Clear high-value customer identification enables targeted premium service and loyalty programs
+
+### **Geographic Strategy**
+- **EU Premium Market Potential**: European customers demonstrate willingness to pay premium prices - opportunity for premium product positioning
+- **Untapped Revenue Growth**: EU market is significantly underutilized despite proven high-value behavior - expansion strategy required
+- **Market-Specific Strategies**: Different purchasing behaviors between regions suggest need for tailored marketing and product approaches
+
+### **Operational Intelligence**
+- **Weekend Underutilization**: Lower weekend performance represents missed revenue opportunity - weekend-specific promotions needed
+- **Operational Efficiency Gap**: Extreme weekday concentration may create capacity constraints and service quality issues
+- **EU Market Leadership**: German market success provides blueprint for expanding into similar European markets
 
 ---
 
@@ -81,6 +103,8 @@
 ---
 
 ## 🏗️ **Data Architecture & Technical Implementation**
+
+## 📋 **Data Models Architecture**
 
 ```mermaid
 graph TD
@@ -107,23 +131,6 @@ graph TD
     style H fill:#6c5ce7
 ```
 
-### **Technology Stack**
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Data Warehouse** | Google BigQuery | Scalable cloud data storage and compute |
-| **Transformation** | dbt (Data Build Tool) | SQL-based ELT transformations with testing |
-| **Visualization** | Looker Studio | Interactive dashboards and self-service BI |
-| **Version Control** | Git/GitHub | Code versioning and collaboration |
-| **Documentation** | dbt Docs | Automated data lineage and model documentation |
-| **Testing** | dbt Tests + Custom SQL | Comprehensive data quality validation |
-
----
-
-## 📋 **Data Models Architecture**
-
-![Data Models](images/data-architecture.png)
-
 ### **Staging Layer** (`models/staging/`)
 - **`stg_invoices`** - Cleaned and standardized transaction data with data quality filters
 
@@ -143,6 +150,19 @@ graph TD
 - **`customer_insights`** - Customer concentration analysis and revenue distribution
 - **`product_intelligence`** - Product portfolio optimization and geographic performance
 - **`business_overview`** - Executive-level KPIs and business metrics
+
+---
+
+### **Technology Stack**
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Data Warehouse** | Google BigQuery | Scalable cloud data storage and compute |
+| **Transformation** | dbt (Data Build Tool) | SQL-based ELT transformations with testing |
+| **Visualization** | Looker Studio | Interactive dashboards and self-service BI |
+| **Version Control** | Git/GitHub | Code versioning and collaboration |
+| **Documentation** | dbt Docs | Automated data lineage and model documentation |
+| **Testing** | dbt Tests + Custom SQL | Comprehensive data quality validation |
 
 ---
 
@@ -197,25 +217,6 @@ FROM {{ ref('business_overview') }}
 - **Clustering**: Strategic clustering by customer_id and product_id
 - **Incremental Processing**: Efficient handling of daily data updates
 - **Query Optimisation**: Optimized SQL for BigQuery's distributed architecture
-
----
-
-## 🔍 **Key Business Insights Generated**
-
-### **Customer Intelligence**
-- **High-Value Concentration**: 150 Champions generate 40% of total revenue
-- **Retention Opportunity**: 60% of customers never return for a 2nd purchase
-- **Lifecycle Insight**: Customers with 3+ purchases have 80% probability of reaching £200+ LTV
-
-### **Geographic Strategy**
-- **Market Dynamics**: UK customers average 3.2 orders at £35 AOV; EU customers average 1.8 orders at £52 AOV  
-- **Expansion Potential**: EU represents only 15% of revenue despite higher per-customer value
-- **Localization Need**: Product performance varies significantly by country
-
-### **Operational Intelligence**
-- **Timing Patterns**: Weekend orders show 25% higher AOV despite lower volume
-- **Resource Allocation**: 91% of revenue occurs during weekdays (operational planning)
-- **Product Portfolio**: Top 30% of products drive 80% of revenue (inventory optimization)
 
 ---
 
