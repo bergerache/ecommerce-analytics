@@ -4,12 +4,6 @@
 
 *Transforming raw transaction data into strategic business intelligence through modern data engineering practices*
 
-![Business Foundation](images/image.png)
-![Customer Intelligence](images/image_2.png)
-![Operational Insights](images/image_3.png)
-
----
-
 ## 🎯 Business Problem & Solution
 
 **Problem:** E-commerce companies struggle with fragmented data across multiple systems, making it impossible for executives to get real-time insights into business performance, customer behavior, and revenue trends.
@@ -23,6 +17,37 @@
 - **Marketing Teams** - Customer segmentation and campaign performance analysis  
 - **Operations Managers** - Sales performance and inventory insights
 - **Data Teams** - Scalable analytics infrastructure and automated reporting
+
+---
+
+## 📊 **Dashboard Story Framework**
+
+### **Page 1: Business Foundation**
+**"Where we stand and what drives our business"**
+
+- **Business Scale Context** - £8.66M revenue, 4,293 customers, 19 countries
+- **Revenue Concentration Analysis** - Pareto chart revealing 20/60 rule risk
+- **Geographic Market Intelligence** - UK volume vs EU value opportunity  
+- **Strategic Risk Assessment** - Customer dependency and diversification needs
+![Business Foundation](images/image.png)
+
+### **Page 2: Customer Intelligence**  
+**"Who our valuable customers are and how they behave"**
+
+- **RFM Segmentation Dashboard** - Champions, Loyal, At-Risk customer analysis
+- **Customer Lifecycle Journey** - Retention conversion points and LTV patterns
+- **Geographic Behavioral Analysis** - UK frequency vs EU value strategies
+- **Actionable Segmentation** - Targeted retention and acquisition opportunities
+![Customer Intelligence](images/image_2.png)
+
+### **Page 3: Operational Excellence**
+**"What sells, when, and where - optimization opportunities"**
+
+- **Product Portfolio Intelligence** - Revenue concentration and inventory optimization
+- **Operational Timing Analysis** - Peak patterns and resource allocation insights
+- **Geographic Product Performance** - Market-specific product strategies
+- **Efficiency Opportunities** - Data-driven operational improvements
+![Operational Insights](images/image_3.png)
 
 ---
 
@@ -125,8 +150,6 @@ graph TD
 
 **Enterprise-Grade Quality Assurance: 103/103 Tests Passing (100%)**
 
-![Testing Results](images/testing-dashboard.png)
-
 ### **Test Coverage Strategy**
 - **Source Tests** - Raw data validation and freshness monitoring
 - **Model Tests** - Business logic validation and data integrity  
@@ -155,36 +178,6 @@ FROM {{ ref('business_overview') }}
 
 ---
 
-## 📊 **Dashboard Story Framework**
-
-![Dashboard Pages](images/dashboard-pages.png)
-
-### **Page 1: Business Foundation**
-**"Where we stand and what drives our business"**
-
-- **Business Scale Context** - £8.66M revenue, 4,293 customers, 19 countries
-- **Revenue Concentration Analysis** - Pareto chart revealing 20/60 rule risk
-- **Geographic Market Intelligence** - UK volume vs EU value opportunity  
-- **Strategic Risk Assessment** - Customer dependency and diversification needs
-
-### **Page 2: Customer Intelligence**  
-**"Who our valuable customers are and how they behave"**
-
-- **RFM Segmentation Dashboard** - Champions, Loyal, At-Risk customer analysis
-- **Customer Lifecycle Journey** - Retention conversion points and LTV patterns
-- **Geographic Behavioral Analysis** - UK frequency vs EU value strategies
-- **Actionable Segmentation** - Targeted retention and acquisition opportunities
-
-### **Page 3: Operational Excellence**
-**"What sells, when, and where - optimization opportunities"**
-
-- **Product Portfolio Intelligence** - Revenue concentration and inventory optimization
-- **Operational Timing Analysis** - Peak patterns and resource allocation insights
-- **Geographic Product Performance** - Market-specific product strategies
-- **Efficiency Opportunities** - Data-driven operational improvements
-
----
-
 ## 🛠️ **Advanced Technical Implementation**
 
 ### **Advanced dbt Patterns**
@@ -199,11 +192,11 @@ FROM {{ ref('business_overview') }}
 - **Documentation**: Rich model and column documentation with business context
 - **Version Control**: Structured commit history and branching strategy
 
-### **Performance Optimization**
+### **Performance Optimisation**
 - **Partitioning**: Date-based partitioning for query performance
 - **Clustering**: Strategic clustering by customer_id and product_id
 - **Incremental Processing**: Efficient handling of daily data updates
-- **Query Optimization**: Optimized SQL for BigQuery's distributed architecture
+- **Query Optimisation**: Optimized SQL for BigQuery's distributed architecture
 
 ---
 
