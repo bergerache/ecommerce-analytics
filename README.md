@@ -316,6 +316,21 @@ FROM {{ ref('business_overview') }}
 
 ---
 
+## 🏦 Fintech Relevance
+
+These analytics patterns transfer directly to financial services:
+
+| E-commerce Metric | Banking Equivalent |
+|-------------------|-------------------|
+| Customer segmentation | Account tier classification |
+| Revenue per customer | Fee income / Interest margin |
+| Purchase frequency | Transaction frequency |
+| Cohort retention | Deposit retention by vintage |
+| Product affinity | Cross-sell propensity |
+| RFM scoring | Customer value scoring |
+
+---
+
 **Built with ❤️ for data-driven decision making**
 
 *Part of a comprehensive Business Intelligence Portfolio demonstrating end-to-end analytics solutions for data-driven organizations.*
